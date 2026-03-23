@@ -1,364 +1,373 @@
-
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard UTBK 2026 — Azzam v13</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
 <style>
-* { box-sizing: border-box; }
-.wrap { padding: 0.25rem 0 1.5rem; width: 100%; }
-.grid4 { display: grid; grid-template-columns: repeat(4, minmax(0,1fr)); gap: 8px; margin-bottom: 0.875rem; }
-.mcard { background: var(--color-background-secondary); border-radius: var(--border-radius-md); padding: 0.75rem 0.875rem; }
-.mlabel { font-size: 10px; color: var(--color-text-secondary); margin-bottom: 3px; }
-.mval { font-size: 20px; font-weight: 500; color: var(--color-text-primary); line-height: 1.2; }
-.msub { font-size: 10px; color: var(--color-text-tertiary); margin-top: 2px; }
-.section-label { font-size: 10px; font-weight: 500; letter-spacing: 0.05em; text-transform: uppercase; color: var(--color-text-tertiary); margin: 1.1rem 0 0.45rem; }
-.divider { border: none; border-top: 0.5px solid var(--color-border-tertiary); margin: 1rem 0; }
-.alert { border-radius: var(--border-radius-md); padding: 9px 12px; font-size: 12px; line-height: 1.6; margin-bottom: 0.65rem; }
-.alert-info   { background: var(--color-background-info);    color: var(--color-text-info); }
-.alert-warn   { background: var(--color-background-warning); color: var(--color-text-warning); }
-.alert-danger { background: var(--color-background-danger);  color: var(--color-text-danger); }
-.highlight-card { background: var(--color-background-primary); border: 2px solid var(--color-border-info); border-radius: var(--border-radius-lg); padding: 0.75rem 0.875rem; margin-bottom: 0.65rem; }
-.jam-grid { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 7px; margin-top: 8px; }
-.jam-item { background: var(--color-background-secondary); border-radius: var(--border-radius-md); padding: 7px 8px; text-align: center; }
-.jam-val { font-size: 14px; font-weight: 500; }
-.jam-lbl { font-size: 9px; color: var(--color-text-tertiary); margin-top: 2px; }
-.countdown-card { background: var(--color-background-secondary); border-radius: var(--border-radius-lg); padding: 0.875rem 1rem; margin-bottom: 0.875rem; }
-.countdown-top { display: flex; align-items: baseline; gap: 7px; margin-bottom: 5px; }
-.countdown-num { font-size: 36px; font-weight: 500; color: #E24B4A; line-height: 1; }
-.countdown-unit { font-size: 13px; color: var(--color-text-secondary); }
-.countdown-date { font-size: 10px; color: var(--color-text-tertiary); margin-bottom: 6px; }
-.countdown-bar-outer { background: var(--color-background-primary); border-radius: 5px; height: 9px; overflow: hidden; }
-.countdown-bar-fill { height: 100%; border-radius: 5px; background: linear-gradient(90deg,#1D9E75,#378ADD); }
-.countdown-labels { display: flex; justify-content: space-between; font-size: 9px; color: var(--color-text-tertiary); margin-top: 3px; }
-.phase-progress-row { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
-.phase-progress-lbl { font-size: 10px; color: var(--color-text-secondary); width: 96px; flex-shrink: 0; }
-.phase-progress-outer { flex: 1; background: var(--color-background-secondary); border-radius: 4px; height: 15px; overflow: hidden; position: relative; }
-.phase-progress-fill { height: 100%; border-radius: 4px; display: flex; align-items: center; padding-left: 5px; }
-.phase-progress-val { font-size: 9px; font-weight: 500; white-space: nowrap; }
-.phase-progress-pct { font-size: 10px; color: var(--color-text-tertiary); min-width: 28px; text-align: right; flex-shrink: 0; }
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --bg: #ffffff; --bg2: #f7f5f0; --bg3: #f1efe8;
+  --txt: #2c2c2a; --txt2: #5f5e5a; --txt3: #888780;
+  --border: #d3d1c7;
+  --blue: #378ADD; --green: #1D9E75; --amber: #BA7517;
+  --red: #E24B4A; --purple: #3C3489; --gray: #888780;
+  --r-md: 8px; --r-lg: 12px;
+}
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: var(--bg3); color: var(--txt); padding: 20px; }
+.container { max-width: 820px; margin: 0 auto; }
+.card { background: var(--bg); border-radius: var(--r-lg); border: 0.5px solid var(--border); padding: 18px 22px; margin-bottom: 14px; }
+.page-title { font-size: 20px; font-weight: 500; margin-bottom: 2px; }
+.section-label { font-size: 10px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--txt3); margin: 0 0 8px; }
+.divider { border: none; border-top: 0.5px solid var(--border); margin: 16px 0; }
+.grid4 { display: grid; grid-template-columns: repeat(4,1fr); gap: 8px; }
+.grid3 { display: grid; grid-template-columns: repeat(3,1fr); gap: 6px; }
+.mcard { background: var(--bg2); border-radius: var(--r-md); padding: 10px 12px; }
+.mcard .lbl { font-size: 10px; color: var(--txt2); margin-bottom: 3px; }
+.mcard .val { font-size: 19px; font-weight: 500; line-height: 1.2; }
+.mcard .sub { font-size: 10px; color: var(--txt3); margin-top: 2px; }
+.alert { border-radius: var(--r-md); padding: 9px 12px; font-size: 12px; line-height: 1.6; margin-bottom: 8px; }
+.a-info { background:#e6f1fb; color:#185FA5; }
+.a-warn { background:#faeeda; color:#854F0B; }
+.a-danger { background:#fcebeb; color:#A32D2D; }
+.highlight { border: 2px solid var(--blue); border-radius: var(--r-lg); padding: 12px 14px; margin-bottom: 10px; }
+.jam-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 7px; margin-top: 8px; }
+.jam-item { background: var(--bg2); border-radius: var(--r-md); padding: 8px; text-align: center; }
+.jam-item .jv { font-size: 14px; font-weight: 500; }
+.jam-item .jl { font-size: 9px; color: var(--txt3); margin-top: 2px; }
+/* COUNTDOWN */
+.cnt-card { background: var(--bg2); border-radius: var(--r-lg); padding: 14px 16px; margin-bottom: 12px; }
+.cnt-top { display: flex; align-items: baseline; gap: 7px; margin-bottom: 4px; }
+.cnt-num { font-size: 34px; font-weight: 500; color: var(--red); line-height: 1; }
+.cnt-unit { font-size: 13px; color: var(--txt2); }
+.cnt-date { font-size: 10px; color: var(--txt3); margin-bottom: 6px; }
+.cnt-bar { background: var(--bg); border-radius: 5px; height: 9px; overflow: hidden; }
+.cnt-fill { height: 100%; border-radius: 5px; background: linear-gradient(90deg,#1D9E75,#378ADD); }
+.cnt-lbls { display: flex; justify-content: space-between; font-size: 9px; color: var(--txt3); margin-top: 3px; }
+/* PHASE */
+.ph-row { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
+.ph-lbl { font-size: 10px; color: var(--txt2); width: 96px; flex-shrink: 0; }
+.ph-outer { flex: 1; background: var(--bg2); border-radius: 4px; height: 14px; overflow: hidden; position: relative; }
+.ph-fill { height: 100%; border-radius: 4px; display: flex; align-items: center; padding-left: 5px; }
+.ph-fill span { font-size: 9px; font-weight: 500; white-space: nowrap; }
+.ph-pct { font-size: 10px; color: var(--txt3); min-width: 28px; text-align: right; flex-shrink: 0; }
 /* TIMELINE */
-.timeline-wrap { border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-lg); overflow: hidden; }
-.tl-month { background: var(--color-background-secondary); padding: 5px 10px; font-size: 10px; font-weight: 500; color: var(--color-text-secondary); letter-spacing: 0.04em; text-transform: uppercase; border-bottom: 0.5px solid var(--color-border-tertiary); }
-.tl-phase-sep { background: var(--color-background-secondary); padding: 4px 10px; font-size: 9px; font-weight: 500; color: var(--color-text-tertiary); letter-spacing: 0.04em; text-transform: uppercase; border-bottom: 0.5px solid var(--color-border-tertiary); border-top: 0.5px solid var(--color-border-tertiary); }
-.tl-row { display: flex; align-items: flex-start; gap: 8px; padding: 7px 10px; border-bottom: 0.5px solid var(--color-border-tertiary); }
+.tl { border: 0.5px solid var(--border); border-radius: var(--r-lg); overflow: hidden; }
+.tl-month { background: var(--bg2); padding: 5px 10px; font-size: 10px; font-weight: 600; color: var(--txt2); letter-spacing: 0.05em; text-transform: uppercase; border-bottom: 0.5px solid var(--border); }
+.tl-phase { background: var(--bg2); padding: 4px 10px; font-size: 9px; font-weight: 600; color: var(--txt3); letter-spacing: 0.05em; text-transform: uppercase; border-bottom: 0.5px solid var(--border); border-top: 0.5px solid var(--border); }
+.tl-row { display: flex; align-items: flex-start; gap: 8px; padding: 7px 10px; border-bottom: 0.5px solid var(--border); }
 .tl-row:last-child { border-bottom: none; }
 .tl-row.past { opacity: 0.35; }
-.tl-row.today-row { background: rgba(29,158,117,0.07); border-left: 3px solid #1D9E75; }
-.tl-row.speedrun-end { background: rgba(55,138,221,0.05); border-left: 3px solid #378ADD; }
-.tl-row.dimmed { opacity: 0.72; background: var(--color-background-secondary); }
+.tl-row.today-row { background: rgba(29,158,117,0.07); border-left: 3px solid var(--green); }
+.tl-row.speedrun-end { background: rgba(55,138,221,0.05); border-left: 3px solid var(--blue); }
+.tl-row.dimmed { opacity: 0.72; background: var(--bg2); }
 .tl-row.dimmed.past { opacity: 0.28; }
 .tl-date { width: 60px; flex-shrink: 0; }
-.tl-date-main { font-size: 11px; font-weight: 500; color: var(--color-text-primary); }
-.tl-date-day  { font-size: 9px; color: var(--color-text-tertiary); }
+.tl-date .dm { font-size: 11px; font-weight: 500; }
+.tl-date .dd { font-size: 9px; color: var(--txt3); }
 .tl-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; margin-top: 4px; }
 .tl-content { flex: 1; min-width: 0; }
-.tl-title { font-size: 12px; font-weight: 500; color: var(--color-text-primary); line-height: 1.3; margin-bottom: 1px; }
-.tl-meta  { font-size: 10px; color: var(--color-text-secondary); margin-bottom: 2px; }
-.tl-daybadge { font-size: 8px; color: var(--color-text-tertiary); margin-bottom: 3px; }
-.tl-materi { font-size: 10px; color: var(--color-text-secondary); line-height: 1.5; }
-.tl-materi-item::before { content: "· "; color: var(--color-text-tertiary); }
-.tl-sub { font-size: 10px; color: var(--color-text-tertiary); margin-top: 1px; font-style: italic; }
-.today-badge { font-size: 8px; font-weight: 500; background: #1D9E75; color: white; padding: 1px 5px; border-radius: 7px; margin-left: 5px; vertical-align: middle; }
-.gcal-note { display: flex; align-items: center; gap: 5px; font-size: 10px; color: var(--color-text-tertiary); margin-bottom: 6px; }
-.gcal-icon { width: 13px; height: 13px; border-radius: 2px; background: #4285F4; display: inline-flex; align-items: center; justify-content: center; font-size: 7px; color: white; font-weight: 700; flex-shrink: 0; }
+.tl-title { font-size: 12px; font-weight: 500; line-height: 1.3; margin-bottom: 1px; }
+.tl-meta { font-size: 10px; color: var(--txt2); margin-bottom: 2px; }
+.tl-daybadge { font-size: 8px; color: var(--txt3); margin-bottom: 3px; }
+.tl-items { font-size: 10px; color: var(--txt2); line-height: 1.5; }
+.tl-items li { list-style: none; padding-left: 10px; position: relative; }
+.tl-items li::before { content: "·"; position: absolute; left: 0; color: var(--txt3); }
+.tl-note { font-size: 10px; color: var(--txt3); font-style: italic; margin-top: 1px; }
+.today-badge { font-size: 8px; font-weight: 600; background: var(--green); color: white; padding: 1px 5px; border-radius: 7px; margin-left: 5px; }
 /* SKOR INPUT */
-.skor-platform-label { font-size: 9px; font-weight: 500; letter-spacing: 0.05em; text-transform: uppercase; color: var(--color-text-tertiary); margin: 10px 0 4px; }
-.skor-grid { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 5px; margin-bottom: 2px; }
-.skor-card { background: var(--color-background-secondary); border-radius: var(--border-radius-md); padding: 5px 7px; display: flex; flex-direction: column; gap: 3px; }
-.skor-lbl { font-size: 10px; color: var(--color-text-secondary); }
-.skor-inp { width: 100%; font-size: 12px; font-weight: 500; text-align: right; background: var(--color-background-primary); border: 0.5px solid var(--color-border-secondary); border-radius: 5px; padding: 3px 5px; color: var(--color-text-primary); }
-.skor-inp:focus { outline: none; border-color: #378ADD; }
+.plat-lbl { font-size: 9px; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; color: var(--txt3); margin: 10px 0 4px; }
+.skor-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 5px; margin-bottom: 4px; }
+.skor-card { background: var(--bg2); border-radius: var(--r-md); padding: 5px 7px; display: flex; flex-direction: column; gap: 3px; }
+.skor-card .slbl { font-size: 10px; color: var(--txt2); }
+.skor-card input { width: 100%; font-size: 12px; font-weight: 500; text-align: right; background: var(--bg); border: 0.5px solid var(--border); border-radius: 5px; padding: 3px 5px; color: var(--txt); }
+.skor-card input:focus { outline: none; border-color: var(--blue); }
 /* JURUSAN */
-.jurusan-grid { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 10px; margin-bottom: 0.875rem; }
-.jurusan-card { border-radius: var(--border-radius-lg); padding: 0.875rem 1rem; }
-.pil1 { background: var(--color-background-primary); border: 2px solid #378ADD; }
-.pil2 { background: var(--color-background-primary); border: 2px solid #E24B4A; }
-.pil-badge { font-size: 9px; font-weight: 500; padding: 2px 8px; border-radius: 18px; display: inline-block; margin-bottom: 6px; }
-.pil1-badge { background: #E6F1FB; color: #185FA5; }
-.pil2-badge { background: #FCEBEB; color: #A32D2D; }
-.j-name { font-size: 12px; font-weight: 500; color: var(--color-text-primary); margin-bottom: 1px; }
-.j-rumpun { font-size: 10px; font-weight: 500; color: var(--color-text-secondary); margin-bottom: 1px; }
-.j-fak { font-size: 9px; color: var(--color-text-tertiary); margin-bottom: 8px; }
-.jstat-row { display: flex; justify-content: space-between; margin-bottom: 4px; }
-.jstat-label { font-size: 10px; color: var(--color-text-secondary); }
-.jstat-val { font-size: 10px; font-weight: 500; }
-.jstat-val.danger { color: #A32D2D; }
-.jstat-val.warn { color: #854F0B; }
-.jstat-val.ok { color: #0F6E56; }
-.keketatan-bar { background: var(--color-background-secondary); border-radius: 4px; height: 5px; overflow: hidden; margin: 5px 0; }
-.keketatan-fill { height: 100%; border-radius: 4px; }
-.gap-section { margin-top: 8px; padding-top: 6px; border-top: 0.5px solid var(--color-border-tertiary); }
-.gap-lbl { font-size: 10px; color: var(--color-text-secondary); margin-bottom: 3px; }
-.gap-bar-outer { background: var(--color-background-secondary); border-radius: 4px; height: 14px; overflow: hidden; position: relative; }
-.gap-bar-fill { height: 100%; border-radius: 4px; display: flex; align-items: center; padding-left: 5px; }
-.gap-bar-txt { font-size: 9px; font-weight: 500; white-space: nowrap; }
-.gap-target-line { position: absolute; top: 0; width: 2px; height: 100%; background: #E24B4A; }
-.itb-src { font-size: 9px; color: var(--color-text-tertiary); margin-top: 7px; padding-top: 6px; border-top: 0.5px solid var(--color-border-tertiary); line-height: 1.5; }
-.itb-src a { color: var(--color-text-tertiary); text-decoration: underline; }
-/* PROJ & SUBTES */
+.j-grid { display: grid; grid-template-columns: repeat(2,1fr); gap: 10px; margin-bottom: 10px; }
+.j-card { border-radius: var(--r-lg); padding: 14px 16px; }
+.j1 { border: 2px solid var(--blue); }
+.j2 { border: 2px solid var(--red); }
+.j-badge { font-size: 9px; font-weight: 600; padding: 2px 8px; border-radius: 18px; display: inline-block; margin-bottom: 6px; }
+.j1-badge { background: #e6f1fb; color: #185FA5; }
+.j2-badge { background: #fcebeb; color: #A32D2D; }
+.j-name { font-size: 12px; font-weight: 500; margin-bottom: 2px; }
+.j-fak { font-size: 9px; color: var(--txt3); margin-bottom: 8px; }
+.j-stat { display: flex; justify-content: space-between; margin-bottom: 4px; font-size: 10px; }
+.j-stat .jl { color: var(--txt2); }
+.j-stat .jv { font-weight: 500; }
+.j-stat .jv.warn { color: #854F0B; }
+.j-stat .jv.danger { color: #A32D2D; }
+.kbar { background: var(--bg2); border-radius: 4px; height: 5px; overflow: hidden; margin: 5px 0; }
+.kbar-fill { height: 100%; border-radius: 4px; }
+.gap-sec { margin-top: 8px; padding-top: 6px; border-top: 0.5px solid var(--border); }
+.gap-lbl { font-size: 10px; color: var(--txt2); margin-bottom: 3px; }
+.gap-outer { background: var(--bg2); border-radius: 4px; height: 14px; overflow: hidden; position: relative; }
+.gap-fill { height: 100%; border-radius: 4px; display: flex; align-items: center; padding-left: 5px; transition: width 0.3s; }
+.gap-fill span { font-size: 9px; font-weight: 500; white-space: nowrap; }
+.gap-line { position: absolute; top: 0; width: 2px; height: 100%; background: var(--red); }
+.src-note { font-size: 9px; color: var(--txt3); margin-top: 6px; font-style: italic; }
+/* PROJ */
 .proj-row { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
-.proj-label { font-size: 11px; color: var(--color-text-secondary); width: 100px; flex-shrink: 0; text-align: right; }
-.proj-bar-outer { flex: 1; background: var(--color-background-secondary); border-radius: 4px; height: 20px; overflow: hidden; position: relative; }
-.proj-bar-inner { height: 100%; border-radius: 4px; display: flex; align-items: center; padding: 0 7px; }
+.proj-lbl { font-size: 11px; color: var(--txt2); width: 105px; flex-shrink: 0; text-align: right; }
+.proj-outer { flex: 1; background: var(--bg2); border-radius: 4px; height: 20px; overflow: hidden; position: relative; }
+.proj-inner { height: 100%; border-radius: 4px; display: flex; align-items: center; padding: 0 7px; }
 .proj-val { font-size: 10px; font-weight: 500; white-space: nowrap; }
 .proj-t1 { position: absolute; top: 0; height: 100%; width: 2px; background: rgba(226,75,74,0.7); }
 .proj-t2 { position: absolute; top: 0; height: 100%; width: 2px; background: rgba(186,117,23,0.5); }
-.subtes-row { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
-.subtes-lbl { font-size: 10px; color: var(--color-text-secondary); width: 70px; text-align: right; flex-shrink: 0; }
-.subtes-outer { flex: 1; background: var(--color-background-secondary); border-radius: 4px; height: 18px; overflow: hidden; }
-.subtes-inner { height: 100%; border-radius: 4px; display: flex; align-items: center; padding: 0 7px; }
-.subtes-val { font-size: 10px; font-weight: 500; white-space: nowrap; }
-.phase-box { background: var(--color-background-primary); border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-lg); padding: 0.75rem 0.875rem; margin-bottom: 0.5rem; }
-.phase-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 3px; flex-wrap: wrap; gap: 3px; }
-.phase-name { font-size: 12px; font-weight: 500; color: var(--color-text-primary); }
-.phase-date { font-size: 9px; color: var(--color-text-tertiary); }
-.phase-desc { font-size: 11px; color: var(--color-text-secondary); line-height: 1.55; margin-top: 4px; }
-.bar-track { background: var(--color-background-secondary); border-radius: 4px; height: 7px; overflow: hidden; margin: 5px 0 3px; }
+/* SUBTES */
+.sub-row { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
+.sub-lbl { font-size: 10px; color: var(--txt2); width: 70px; text-align: right; flex-shrink: 0; }
+.sub-outer { flex: 1; background: var(--bg2); border-radius: 4px; height: 18px; overflow: hidden; }
+.sub-inner { height: 100%; border-radius: 4px; display: flex; align-items: center; padding: 0 7px; }
+.sub-val { font-size: 10px; font-weight: 500; white-space: nowrap; }
+/* PHASE BOXES */
+.ph-box { background: var(--bg); border: 0.5px solid var(--border); border-radius: var(--r-lg); padding: 12px 14px; margin-bottom: 8px; }
+.ph-box.accent { border-color: var(--blue); border-width: 1.5px; }
+.ph-head { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 3px; margin-bottom: 3px; }
+.ph-name { font-size: 12px; font-weight: 500; }
+.ph-date { font-size: 9px; color: var(--txt3); }
+.ph-desc { font-size: 11px; color: var(--txt2); line-height: 1.55; margin-top: 4px; }
+.bar-track { background: var(--bg2); border-radius: 4px; height: 7px; overflow: hidden; margin: 5px 0 3px; }
 .bar-fill { height: 100%; border-radius: 4px; }
-.legend-row { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 8px; font-size: 10px; color: var(--color-text-secondary); }
+.legend-row { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 8px; font-size: 10px; color: var(--txt2); }
 .legend-item { display: flex; align-items: center; gap: 4px; }
 .legend-dot { width: 9px; height: 9px; border-radius: 2px; flex-shrink: 0; }
+.footer { font-size: 9px; color: var(--txt3); text-align: center; margin-top: 14px; }
 </style>
+</head>
+<body>
+<div class="container">
 
-<div class="wrap">
+<div class="card">
+  <div class="page-title">Dashboard UTBK 2026</div>
+  <div style="font-size:11px;color:var(--txt2);margin-bottom:14px;" id="todayLabel"></div>
 
-<div class="section-label" id="todayLabel">Snapshot</div>
-<div class="countdown-card">
-  <div class="countdown-top"><span class="countdown-num" id="daysLeft">—</span><span class="countdown-unit">hari menuju UTBK</span></div>
-  <div class="countdown-date" id="wibLabel">—</div>
-  <div class="countdown-bar-outer"><div class="countdown-bar-fill" id="cntFill" style="width:0%"></div></div>
-  <div class="countdown-labels"><span>22 Mar</span><span id="cntPct"></span><span>21 Apr</span></div>
-</div>
-<div class="grid4">
-  <div class="mcard"><div class="mlabel">Posisi belajar</div><div class="mval">Day 46</div><div class="msub">dari 120 days</div></div>
-  <div class="mcard"><div class="mlabel">Sisa konten</div><div class="mval">74 days</div><div class="msub">Day 47–120</div></div>
-  <div class="mcard"><div class="mlabel">Materi baru</div><div class="mval" style="color:#BA7517">36 topik</div><div class="msub">dipadatkan Fase 1</div></div>
-  <div class="mcard"><div class="mlabel">Status sekolah</div><div class="mval" style="color:#1D9E75">Libur</div><div class="msub">Full-time belajar</div></div>
-</div>
-<div class="highlight-card">
-  <div style="font-size:12px;font-weight:500;color:var(--color-text-primary);margin-bottom:7px;">Libur sekolah penuh sampai UTBK = full-time belajar tersedia</div>
-  <div class="jam-grid">
-    <div class="jam-item"><div class="jam-val" style="color:#E24B4A">3–4 jam</div><div class="jam-lbl">Estimasi dulu (sekolah)</div></div>
-    <div class="jam-item"><div class="jam-val" style="color:#1D9E75">6–9 jam</div><div class="jam-lbl">Sekarang (libur)</div></div>
-    <div class="jam-item"><div class="jam-val" style="color:#378ADD">2× lipat</div><div class="jam-lbl">kapasitas efektif</div></div>
-  </div>
-</div>
-
-<hr class="divider">
-<div class="section-label">Progress Fase — Real-time WIB</div>
-<div id="phaseProgressArea"></div>
-
-<hr class="divider">
-<div class="section-label">Jadwal Harian</div>
-<div class="gcal-note"><span class="gcal-icon">G</span>Study & School · Speedrun ke 22–31 Mar · WIB</div>
-<div class="alert alert-info" style="margin-bottom:8px;">Hari lewat di-dim. Hari ini disorot hijau.</div>
-
-<div class="timeline-wrap">
-  <div class="tl-month">Maret 2026 — Fase 1: Speedrun</div>
-  <div class="tl-row" data-date="2026-03-22"><div class="tl-date"><div class="tl-date-main">22 Mar</div><div class="tl-date-day">Minggu</div></div><div class="tl-dot" style="background:#888780"></div><div class="tl-content"><div class="tl-title">Libur Idulfitri</div><div class="tl-daybadge">Day 47–49</div><div class="tl-materi"><div class="tl-materi-item">PBM: Kata Majemuk, Kata Berpasangan Tetap</div><div class="tl-materi-item">Lit. Inggris: Author's Tone/Attitude, Finding Purpose of Text</div><div class="tl-materi-item">Rest Day / Review cepat</div></div></div></div>
-  <div class="tl-row" data-date="2026-03-23"><div class="tl-date"><div class="tl-date-main">23 Mar</div><div class="tl-date-day">Senin</div></div><div class="tl-dot" style="background:#1D9E75"></div><div class="tl-content"><div class="tl-title">Libur Idulfitri</div><div class="tl-meta">SainsIn TO 1</div><div class="tl-daybadge">Day 50–52</div><div class="tl-materi"><div class="tl-materi-item">Lit. Inggris: Latihan Soal (Day 50)</div><div class="tl-materi-item">PK/PM: Akar & Eksponen, Logaritma Dasar (Day 51)</div><div class="tl-materi-item">PK/PM: SPLDV & SPLTV, Diagram Alir (Day 52)</div></div></div></div>
-  <div class="tl-row" data-date="2026-03-24"><div class="tl-date"><div class="tl-date-main">24 Mar</div><div class="tl-date-day">Selasa</div></div><div class="tl-dot" style="background:#888780"></div><div class="tl-content"><div class="tl-title">Libur Idulfitri</div><div class="tl-daybadge">Day 53–55</div><div class="tl-materi"><div class="tl-materi-item">PK/PM: Himpunan, Fungsi Relasi (Day 53)</div><div class="tl-materi-item">PK/PM: Drilling Latihan Soal PK/PM (Day 54)</div><div class="tl-materi-item">PU: Drilling Penalaran Deduktif & Induktif (Day 55)</div></div></div></div>
-  <div class="tl-row" data-date="2026-03-25"><div class="tl-date"><div class="tl-date-main">25 Mar</div><div class="tl-date-day">Rabu</div></div><div class="tl-dot" style="background:#1D9E75"></div><div class="tl-content"><div class="tl-title">Libur Idulfitri</div><div class="tl-meta">SainsIn TO 2 · Pendaftaran UTBK Buka</div><div class="tl-daybadge">Day 56–58</div><div class="tl-materi"><div class="tl-materi-item">Rest Day / Review (Day 56)</div><div class="tl-materi-item">Lit. Indonesia: Latihan Soal (Day 57–58)</div></div><div class="tl-sub">Pendaftaran UTBK-SNBT 2026 dibuka s/d 7 Apr</div></div></div>
-  <div class="tl-row" data-date="2026-03-26"><div class="tl-date"><div class="tl-date-main">26 Mar</div><div class="tl-date-day">Kamis</div></div><div class="tl-dot" style="background:#888780"></div><div class="tl-content"><div class="tl-title">Libur Idulfitri</div><div class="tl-daybadge">Day 59–61</div><div class="tl-materi"><div class="tl-materi-item">PK/PM: Persamaan & Fungsi Kuadrat (Day 59)</div><div class="tl-materi-item">PK/PM: Pertidaksamaan (Day 60)</div><div class="tl-materi-item">PK/PM: Latihan Soal Kuadrat & Pertidaksamaan (Day 61)</div></div></div></div>
-  <div class="tl-row" data-date="2026-03-27"><div class="tl-date"><div class="tl-date-main">27 Mar</div><div class="tl-date-day">Jumat</div></div><div class="tl-dot" style="background:#888780"></div><div class="tl-content"><div class="tl-title">Libur Idulfitri</div><div class="tl-daybadge">Day 62–64</div><div class="tl-materi"><div class="tl-materi-item">Lit. Inggris: Word's Meaning, Contextual Meaning, Synonym & Antonym (Day 62)</div><div class="tl-materi-item">Rest Day / Review (Day 63)</div><div class="tl-materi-item">PBM: Frasa/Kelompok Kata, Klausa (Day 64)</div></div></div></div>
-  <div class="tl-row" data-date="2026-03-28"><div class="tl-date"><div class="tl-date-main">28 Mar</div><div class="tl-date-day">Sabtu</div></div><div class="tl-dot" style="background:#1D9E75"></div><div class="tl-content"><div class="tl-title">Libur Idulfitri</div><div class="tl-meta">SainsIn TO 3</div><div class="tl-daybadge">Day 65–67</div><div class="tl-materi"><div class="tl-materi-item">PPU: Penggunaan Istilah, Perubahan Makna Kata (Day 65)</div><div class="tl-materi-item">PK/PM: Sudut & Operasi Sudut, Sifat Bangun Datar (Day 66)</div><div class="tl-materi-item">PK/PM: Trigonometri Dasar, Kesebangunan (Day 67)</div></div></div></div>
-  <div class="tl-row" data-date="2026-03-29"><div class="tl-date"><div class="tl-date-main">29 Mar</div><div class="tl-date-day">Minggu</div></div><div class="tl-dot" style="background:#378ADD"></div><div class="tl-content"><div class="tl-title">TO Pahamify 14</div><div class="tl-daybadge">Day 68–70</div><div class="tl-materi"><div class="tl-materi-item">PU: Perbandingan, Persentase, Statistik Dasar (Day 68)</div><div class="tl-materi-item">PU: Soal Cerita Diagram & Tabel (Day 69)</div><div class="tl-materi-item">Rest Day / Review (Day 70)</div></div></div></div>
-  <div class="tl-row" data-date="2026-03-30"><div class="tl-date"><div class="tl-date-main">30 Mar</div><div class="tl-date-day">Senin</div></div><div class="tl-dot" style="background:#9A9CFF"></div><div class="tl-content"><div class="tl-title">Slot TO</div><div class="tl-daybadge">Day 71–73</div><div class="tl-materi"><div class="tl-materi-item">Lit. Indonesia: Latihan Soal (Day 71)</div><div class="tl-materi-item">PK/PM: Keliling & Luas Bangun Datar (Day 72)</div><div class="tl-materi-item">PK/PM: Full Latihan Soal Geometri Bangun Datar (Day 73)</div></div></div></div>
-  <div class="tl-row speedrun-end" data-date="2026-03-31"><div class="tl-date"><div class="tl-date-main">31 Mar</div><div class="tl-date-day">Selasa</div></div><div class="tl-dot" style="background:#BA7517"></div><div class="tl-content"><div class="tl-title">Pengumuman SNBP</div><div class="tl-meta">Akhir Speedrun</div><div class="tl-daybadge">Day 74–76</div><div class="tl-materi"><div class="tl-materi-item">Lit. Inggris: Reference, Inference, Restating Sentence (Day 74)</div><div class="tl-materi-item">Lit. Inggris: Drilling baca artikel, vocab, tenses (Day 75)</div><div class="tl-materi-item">PBM: Kalimat Efektif dan Tidak Efektif (Day 76)</div></div><div class="tl-sub">Cek SNBP — jika lolos, strategi berubah total</div></div></div>
-  <div class="tl-phase-sep">Fase 2 — Drilling + TO Rutin (1–10 Apr)</div>
-  <div class="tl-row dimmed" data-date="2026-04-01"><div class="tl-date"><div class="tl-date-main">1 Apr</div><div class="tl-date-day">Rabu</div></div><div class="tl-dot" style="background:#378ADD"></div><div class="tl-content"><div class="tl-title">TO Pahamify 15</div></div></div>
-  <div class="tl-row dimmed" data-date="2026-04-03"><div class="tl-date"><div class="tl-date-main">3 Apr</div><div class="tl-date-day">Jumat</div></div><div class="tl-dot" style="background:#1D9E75"></div><div class="tl-content"><div class="tl-title">SainsIn TO 4</div></div></div>
-  <div class="tl-row dimmed" data-date="2026-04-06"><div class="tl-date"><div class="tl-date-main">6 Apr</div><div class="tl-date-day">Senin</div></div><div class="tl-dot" style="background:#378ADD"></div><div class="tl-content"><div class="tl-title">TO Pahamify 16</div></div></div>
-  <div class="tl-row dimmed" data-date="2026-04-07"><div class="tl-date"><div class="tl-date-main">7 Apr</div><div class="tl-date-day">Selasa</div></div><div class="tl-dot" style="background:#3C3489"></div><div class="tl-content"><div class="tl-title">Pendaftaran UTBK Tutup</div><div class="tl-sub">Pastikan sudah daftar sebelum ini</div></div></div>
-  <div class="tl-row dimmed" data-date="2026-04-08"><div class="tl-date"><div class="tl-date-main">8 Apr</div><div class="tl-date-day">Rabu</div></div><div class="tl-dot" style="background:#1D9E75"></div><div class="tl-content"><div class="tl-title">SainsIn TO 5</div></div></div>
-  <div class="tl-phase-sep">Fase 3 — Simulasi & Stabilisasi (11–20 Apr)</div>
-  <div class="tl-row dimmed" data-date="2026-04-11"><div class="tl-date"><div class="tl-date-main">11 Apr</div><div class="tl-date-day">Sabtu</div></div><div class="tl-dot" style="background:#378ADD"></div><div class="tl-content"><div class="tl-title">TO Pahamify 17</div></div></div>
-  <div class="tl-row dimmed" data-date="2026-04-13"><div class="tl-date"><div class="tl-date-main">13 Apr</div><div class="tl-date-day">Senin</div></div><div class="tl-dot" style="background:#9A9CFF"></div><div class="tl-content"><div class="tl-title">Slot TO</div></div></div>
-  <div class="tl-row dimmed" data-date="2026-04-15"><div class="tl-date"><div class="tl-date-main">15 Apr</div><div class="tl-date-day">Rabu</div></div><div class="tl-dot" style="background:#378ADD"></div><div class="tl-content"><div class="tl-title">TO Pahamify 18</div></div></div>
-  <div class="tl-row dimmed" data-date="2026-04-17"><div class="tl-date"><div class="tl-date-main">17 Apr</div><div class="tl-date-day">Jumat</div></div><div class="tl-dot" style="background:#1D9E75"></div><div class="tl-content"><div class="tl-title">SainsIn TO 6</div></div></div>
-  <div class="tl-row dimmed" data-date="2026-04-18"><div class="tl-date"><div class="tl-date-main">18 Apr</div><div class="tl-date-day">Sabtu</div></div><div class="tl-dot" style="background:#378ADD"></div><div class="tl-content"><div class="tl-title">TO Pahamify 19</div></div></div>
-  <div class="tl-row dimmed" data-date="2026-04-20"><div class="tl-date"><div class="tl-date-main">20 Apr</div><div class="tl-date-day">Senin</div></div><div class="tl-dot" style="background:#E24B4A"></div><div class="tl-content"><div class="tl-title">H-1 UTBK — Istirahat Penuh</div></div></div>
-  <div class="tl-row dimmed" data-date="2026-04-21"><div class="tl-date"><div class="tl-date-main">21 Apr</div><div class="tl-date-day">Selasa</div></div><div class="tl-dot" style="background:#E24B4A"></div><div class="tl-content"><div class="tl-title">Pelaksanaan UTBK</div><div class="tl-sub">FMIPA-M (Pil.1) · STEI-K (Pil.2)</div></div></div>
-</div>
-
-<hr class="divider">
-
-<!-- SKOR INPUT — v15: Analitica=merah, SainsIn=hijau -->
-<div class="section-label">Skor TO — Input Langsung</div>
-<div class="alert alert-info" style="margin-bottom:8px;">Edit skor — grafik & statistik update otomatis. Diurutkan per platform.</div>
-
-<!-- Analitica: merah (#E24B4A) -->
-<div class="skor-platform-label" style="color:#E24B4A;">● Analitica (1–20)</div>
-<div class="skor-grid">
-  <div class="skor-card"><div class="skor-lbl">Analitica #1</div><input class="skor-inp" id="s_a1" type="number" value="601.91" step="0.01"></div>
-  <div class="skor-card"><div class="skor-lbl">Analitica #2</div><input class="skor-inp" id="s_a2" type="number" value="582.26" step="0.01"></div>
-  <div class="skor-card"><div class="skor-lbl">Analitica #3</div><input class="skor-inp" id="s_a3" type="number" placeholder="—" step="0.01"></div>
-  <div class="skor-card"><div class="skor-lbl">Analitica #4</div><input class="skor-inp" id="s_a4" type="number" placeholder="—" step="0.01"></div>
-  <div class="skor-card"><div class="skor-lbl">Analitica #5</div><input class="skor-inp" id="s_a5" type="number" placeholder="—" step="0.01"></div>
-  <div class="skor-card"><div class="skor-lbl">Analitica #6</div><input class="skor-inp" id="s_a6" type="number" placeholder="—" step="0.01"></div>
-  <div class="skor-card"><div class="skor-lbl">Analitica #7</div><input class="skor-inp" id="s_a7" type="number" placeholder="—" step="0.01"></div>
-  <div class="skor-card"><div class="skor-lbl">Analitica #8</div><input class="skor-inp" id="s_a8" type="number" placeholder="—" step="0.01"></div>
-  <div class="skor-card"><div class="skor-lbl">Analitica #9</div><input class="skor-inp" id="s_a9" type="number" placeholder="—" step="0.01"></div>
-  <div class="skor-card"><div class="skor-lbl">Analitica #10</div><input class="skor-inp" id="s_a10" type="number" placeholder="—" step="0.01"></div>
-  <div class="skor-card"><div class="skor-lbl">Analitica #11</div><input class="skor-inp" id="s_a11" type="number" placeholder="—" step="0.01"></div>
-  <div class="skor-card"><div class="skor-lbl">Analitica #12</div><input class="skor-inp" id="s_a12" type="number" placeholder="—" step="0.01"></div>
-  <div class="skor-card"><div class="skor-lbl">Analitica #13</div><input class="skor-inp" id="s_a13" type="number" placeholder="—" step="0.01"></div>
-  <div class="skor-card"><div class="skor-lbl">Analitica #14</div><input class="skor-inp" id="s_a14" type="number" placeholder="—" step="0.01"></div>
-  <div class="skor-card"><div class="skor-lbl">Analitica #15</div><input class="skor-inp" id="s_a15" type="number" placeholder="—" step="0.01"></div>
-  <div class="skor-card"><div class="skor-lbl">Analitica #16</div><input class="skor-inp" id="s_a16" type="number" placeholder="—" step="0.01"></div>
-  <div class="skor-card"><div class="skor-lbl">Analitica #17</div><input class="skor-inp" id="s_a17" type="number" placeholder="—" step="0.01"></div>
-  <div class="skor-card"><div class="skor-lbl">Analitica #18</div><input class="skor-inp" id="s_a18" type="number" placeholder="—" step="0.01"></div>
-  <div class="skor-card"><div class="skor-lbl">Analitica #19</div><input class="skor-inp" id="s_a19" type="number" placeholder="—" step="0.01"></div>
-  <div class="skor-card"><div class="skor-lbl">Analitica #20</div><input class="skor-inp" id="s_a20" type="number" placeholder="—" step="0.01"></div>
-</div>
-
-<!-- Pahamify: biru (#378ADD) -->
-<div class="skor-platform-label" style="color:#378ADD;">● Pahamify (9–11, 14–19)</div>
-<div class="skor-grid">
-  <div class="skor-card"><div class="skor-lbl">Pahamify #9</div><input class="skor-inp" id="s_p9" type="number" value="535" step="0.01"></div>
-  <div class="skor-card"><div class="skor-lbl">Pahamify #10</div><input class="skor-inp" id="s_p10" type="number" value="557" step="0.01"></div>
-  <div class="skor-card"><div class="skor-lbl">Pahamify #11</div><input class="skor-inp" id="s_p11" type="number" value="586" step="0.01"></div>
-  <div class="skor-card"><div class="skor-lbl">Pahamify #14</div><input class="skor-inp" id="s_p14" type="number" placeholder="—" step="0.01"></div>
-  <div class="skor-card"><div class="skor-lbl">Pahamify #15</div><input class="skor-inp" id="s_p15" type="number" placeholder="—" step="0.01"></div>
-  <div class="skor-card"><div class="skor-lbl">Pahamify #16</div><input class="skor-inp" id="s_p16" type="number" placeholder="—" step="0.01"></div>
-  <div class="skor-card"><div class="skor-lbl">Pahamify #17</div><input class="skor-inp" id="s_p17" type="number" placeholder="—" step="0.01"></div>
-  <div class="skor-card"><div class="skor-lbl">Pahamify #18</div><input class="skor-inp" id="s_p18" type="number" placeholder="—" step="0.01"></div>
-  <div class="skor-card"><div class="skor-lbl">Pahamify #19</div><input class="skor-inp" id="s_p19" type="number" placeholder="—" step="0.01"></div>
-</div>
-
-<!-- SainsIn: hijau (#1D9E75) -->
-<div class="skor-platform-label" style="color:#1D9E75;">● SainsIn (TO 1–6)</div>
-<div class="skor-grid">
-  <div class="skor-card"><div class="skor-lbl">SainsIn TO 1</div><input class="skor-inp" id="s_s1" type="number" placeholder="—" step="0.01"></div>
-  <div class="skor-card"><div class="skor-lbl">SainsIn TO 2</div><input class="skor-inp" id="s_s2" type="number" placeholder="—" step="0.01"></div>
-  <div class="skor-card"><div class="skor-lbl">SainsIn TO 3</div><input class="skor-inp" id="s_s3" type="number" placeholder="—" step="0.01"></div>
-  <div class="skor-card"><div class="skor-lbl">SainsIn TO 4</div><input class="skor-inp" id="s_s4" type="number" placeholder="—" step="0.01"></div>
-  <div class="skor-card"><div class="skor-lbl">SainsIn TO 5</div><input class="skor-inp" id="s_s5" type="number" placeholder="—" step="0.01"></div>
-  <div class="skor-card"><div class="skor-lbl">SainsIn TO 6</div><input class="skor-inp" id="s_s6" type="number" placeholder="—" step="0.01"></div>
-</div>
-
-<div class="grid4" style="margin:8px 0;">
-  <div class="mcard"><div class="mlabel">Rata-rata</div><div class="mval" id="statAvg" style="font-size:18px">—</div><div class="msub" id="statCount">—</div></div>
-  <div class="mcard"><div class="mlabel">Tertinggi</div><div class="mval" id="statMax" style="font-size:18px">—</div><div class="msub" id="statMaxLabel">—</div></div>
-  <div class="mcard"><div class="mlabel">Tren Pahamify</div><div class="mval" id="statTrend" style="font-size:14px">—</div><div class="msub" id="statTrendLabel">—</div></div>
-  <div class="mcard"><div class="mlabel">Gap ke FMIPA-M</div><div class="mval" id="statGap" style="font-size:18px">—</div><div class="msub">dari rata-rata</div></div>
-</div>
-
-<div style="position:relative;width:100%"><canvas id="scoreChart"></canvas></div>
-<!-- Legend v15: Analitica=merah, Pahamify=biru, SainsIn=hijau -->
-<div class="legend-row">
-  <div class="legend-item"><span class="legend-dot" style="background:#E24B4A"></span>Analitica</div>
-  <div class="legend-item"><span class="legend-dot" style="background:#378ADD"></span>Pahamify</div>
-  <div class="legend-item"><span class="legend-dot" style="background:#1D9E75"></span>SainsIn</div>
-  <div class="legend-item"><span class="legend-dot" style="background:#BA751766;border:1px dashed #BA7517"></span>Target FMIPA-M (~650)</div>
-  <div class="legend-item"><span class="legend-dot" style="background:#9A9CFF66;border:1px dashed #6B6EF0"></span>Target STEI-K (~760)</div>
-</div>
-
-<hr class="divider">
-
-<!-- JURUSAN v15: FMIPA-M bukan FMIPA-IPA -->
-<div class="section-label">Jurusan Tujuan & Persaingan</div>
-<div class="alert alert-info" style="font-size:11px;margin-bottom:10px;">
-  Data kuota resmi SNBT 2026 dari <strong>admission.itb.ac.id/id/program/sarjana/seleksi-nasional-berdasarkan-tes</strong>. ITB tidak merilis passing grade resmi — seleksi murni berdasarkan peringkat skor.
-</div>
-
-<div class="jurusan-grid">
-  <div class="jurusan-card pil1">
-    <span class="pil-badge pil1-badge">Pilihan 1</span>
-    <div class="j-name">Matematika ITB</div>
-    <div class="j-rumpun">Rumpun SNBT: FMIPA-M</div>
-    <div class="j-fak">Fakultas Matematika dan Ilmu Pengetahuan Alam</div>
-    <div class="jstat-row"><span class="jstat-label">Kuota SNBT 2026</span><span class="jstat-val ok">60 kursi</span></div>
-    <div class="jstat-row"><span class="jstat-label">Prodi dalam rumpun</span><span class="jstat-val">Matematika, Aktuaria</span></div>
-    <div class="jstat-row"><span class="jstat-label">Peminat est. SNBT 2025</span><span class="jstat-val warn">~480–600</span></div>
-    <div class="jstat-row"><span class="jstat-label">Keketatan est.</span><span class="jstat-val warn">1:8–10 (~10–12%)</span></div>
-    <div class="jstat-row"><span class="jstat-label">Est. skor aman</span><span class="jstat-val warn">630–660</span></div>
-    <div class="keketatan-bar"><div class="keketatan-fill" style="width:22%;background:#BA7517"></div></div>
-    <div class="gap-section">
-      <div class="gap-lbl">Rata-rata vs est. target (~645)</div>
-      <div class="gap-bar-outer"><div class="gap-bar-fill" id="gapBar1" style="background:#378ADD"><span class="gap-bar-txt" style="color:#E6F1FB" id="gapTxt1">572 avg</span></div><div class="gap-target-line" style="left:71%"></div></div>
-      <div style="font-size:9px;color:var(--color-text-tertiary);margin-top:2px;" id="gapNote1">Gap ~73 poin dari est. skor aman</div>
-    </div>
-    <div class="itb-src">
-      Sumber: <a href="https://admission.itb.ac.id/id/program/sarjana/seleksi-nasional-berdasarkan-tes" target="_blank">admission.itb.ac.id</a> · FMIPA-M = rumpun Matematika & Aktuaria (60 kursi total 2 prodi)
-    </div>
+  <div class="cnt-card">
+    <div class="cnt-top"><span class="cnt-num" id="daysLeft">—</span><span class="cnt-unit">hari menuju UTBK</span></div>
+    <div class="cnt-date" id="wibLabel"></div>
+    <div class="cnt-bar"><div class="cnt-fill" id="cntFill" style="width:0%"></div></div>
+    <div class="cnt-lbls"><span>22 Mar</span><span id="cntPct"></span><span>21 Apr</span></div>
   </div>
 
-  <div class="jurusan-card pil2">
-    <span class="pil-badge pil2-badge">Pilihan 2</span>
-    <div class="j-name">Teknik Informatika / STI</div>
-    <div class="j-rumpun">Rumpun SNBT: STEI-K (Komputasi)</div>
-    <div class="j-fak">Sekolah Teknik Elektro dan Informatika</div>
-    <div class="jstat-row"><span class="jstat-label">Kuota SNBT 2026</span><span class="jstat-val danger">67 kursi</span></div>
-    <div class="jstat-row"><span class="jstat-label">Prodi dalam rumpun</span><span class="jstat-val">Teknik Informatika, STI</span></div>
-    <div class="jstat-row"><span class="jstat-label">Peminat est. SNBT 2025</span><span class="jstat-val danger">~3.800+</span></div>
-    <div class="jstat-row"><span class="jstat-label">Keketatan est.</span><span class="jstat-val danger">1:56+ (~1,8%)</span></div>
-    <div class="jstat-row"><span class="jstat-label">Est. skor aman</span><span class="jstat-val danger">750–780+</span></div>
-    <div class="keketatan-bar"><div class="keketatan-fill" style="width:95%;background:#E24B4A"></div></div>
-    <div class="gap-section">
-      <div class="gap-lbl">Rata-rata vs est. target (~760)</div>
-      <div class="gap-bar-outer"><div class="gap-bar-fill" id="gapBar2" style="background:#378ADD"><span class="gap-bar-txt" style="color:#E6F1FB" id="gapTxt2">572 avg</span></div><div class="gap-target-line" style="left:74%"></div></div>
-      <div style="font-size:9px;color:var(--color-text-tertiary);margin-top:2px;" id="gapNote2">Gap ~188 poin dari est. skor aman</div>
-    </div>
-    <div class="itb-src">
-      Sumber: <a href="https://admission.itb.ac.id/id/program/sarjana/seleksi-nasional-berdasarkan-tes" target="_blank">admission.itb.ac.id</a> · STEI-K = rumpun Komputasi (67 kursi total 2 prodi)
+  <div class="grid4" style="margin-bottom:12px;">
+    <div class="mcard"><div class="lbl">Posisi belajar</div><div class="val">Day 46</div><div class="sub">dari 120 days</div></div>
+    <div class="mcard"><div class="lbl">Sisa konten</div><div class="val">74 days</div><div class="sub">Day 47–120</div></div>
+    <div class="mcard"><div class="lbl">Materi baru</div><div class="val" style="color:var(--amber)">36 topik</div><div class="sub">dipadatkan Fase 1</div></div>
+    <div class="mcard"><div class="lbl">Status sekolah</div><div class="val" style="color:var(--green)">Libur</div><div class="sub">Full-time belajar</div></div>
+  </div>
+
+  <div class="highlight">
+    <div style="font-size:12px;font-weight:500;margin-bottom:8px;">Libur sekolah penuh sampai UTBK = full-time belajar tersedia</div>
+    <div class="jam-grid">
+      <div class="jam-item"><div class="jv" style="color:var(--red)">3–4 jam</div><div class="jl">Estimasi dulu (sekolah)</div></div>
+      <div class="jam-item"><div class="jv" style="color:var(--green)">6–9 jam</div><div class="jl">Sekarang (libur)</div></div>
+      <div class="jam-item"><div class="jv" style="color:var(--blue)">2× lipat</div><div class="jl">kapasitas efektif</div></div>
     </div>
   </div>
 </div>
 
-<div class="alert alert-warn" style="font-size:11px;">
-  <strong>Cara daftar ITB via SNBT:</strong> Pilih rumpun, bukan prodi langsung. FMIPA-M (60 kursi) mencakup Matematika dan Aktuaria — penjurusan ke prodi spesifik setelah masuk ITB. ITB tidak pernah merilis passing grade resmi.
-</div>
-<div class="alert alert-danger" style="font-size:11px;">
-  <strong>STEI-K</strong> — <strong>67 kursi</strong> diperebutkan ~3.800+ peminat. Gap ~188 poin dari rata-ratamu sangat berat dalam 30 hari.
+<div class="card">
+  <div class="section-label">Progress Fase — Real-time WIB</div>
+  <div id="phaseArea"></div>
 </div>
 
-<hr class="divider">
+<div class="card">
+  <div class="section-label">Jadwal Harian — GCal + Speedrun 120 Days</div>
+  <div style="display:flex;align-items:center;gap:5px;font-size:10px;color:var(--txt3);margin-bottom:8px;">
+    <span style="width:13px;height:13px;border-radius:2px;background:#4285F4;display:inline-flex;align-items:center;justify-content:center;font-size:7px;color:white;font-weight:700;flex-shrink:0;">G</span>
+    Study & School · Materi 120 Days dipadatkan ke 22–31 Mar · Waktu WIB
+  </div>
+  <div class="alert a-info" style="margin-bottom:8px;">Hari lewat di-dim. Hari ini disorot hijau. Semua waktu WIB (UTC+7).</div>
 
-<div class="section-label">Proyeksi Skor vs Target</div>
-<div class="proj-row"><div class="proj-label">Konservatif</div><div class="proj-bar-outer"><div class="proj-bar-inner" style="width:54%;background:#888780"><span class="proj-val" style="color:#F1EFE8">585–600</span></div><div class="proj-t1" style="left:69%"></div><div class="proj-t2" style="left:88%"></div></div></div>
-<div class="proj-row"><div class="proj-label">Realistis (3 fase)</div><div class="proj-bar-outer"><div class="proj-bar-inner" style="width:65%;background:#1D9E75"><span class="proj-val" style="color:#E1F5EE">600–620</span></div><div class="proj-t1" style="left:69%"></div><div class="proj-t2" style="left:88%"></div></div></div>
-<div class="proj-row"><div class="proj-label">Optimal (full aktif)</div><div class="proj-bar-outer"><div class="proj-bar-inner" style="width:75%;background:#378ADD"><span class="proj-val" style="color:#E6F1FB">620–645</span></div><div class="proj-t1" style="left:69%"></div><div class="proj-t2" style="left:88%"></div></div></div>
-<div style="display:flex;gap:12px;margin-top:5px;font-size:10px;color:var(--color-text-tertiary)">
-  <span style="display:flex;align-items:center;gap:3px"><span style="width:9px;height:2px;background:#E24B4A;display:inline-block;border-radius:1px"></span>Est. aman FMIPA-M ~645</span>
-  <span style="display:flex;align-items:center;gap:3px"><span style="width:9px;height:2px;background:#6B6EF0;display:inline-block;border-radius:1px"></span>Est. aman STEI-K ~760</span>
+  <div class="tl">
+    <div class="tl-month">Maret 2026 — Fase 1: Speedrun</div>
+    <div class="tl-row" data-date="2026-03-22"><div class="tl-date"><div class="dm">22 Mar</div><div class="dd">Minggu</div></div><div class="tl-dot" style="background:#888780"></div><div class="tl-content"><div class="tl-title">Libur Idulfitri</div><div class="tl-daybadge">Day 47–49</div><ul class="tl-items"><li>PBM: Kata Majemuk, Kata Berpasangan Tetap</li><li>Lit. Inggris: Author's Tone/Attitude, Finding Purpose of Text</li><li>Rest Day / Review cepat</li></ul></div></div>
+    <div class="tl-row" data-date="2026-03-23"><div class="tl-date"><div class="dm">23 Mar</div><div class="dd">Senin</div></div><div class="tl-dot" style="background:#1D9E75"></div><div class="tl-content"><div class="tl-title">Libur Idulfitri</div><div class="tl-meta">SainsIn TO 1</div><div class="tl-daybadge">Day 50–52</div><ul class="tl-items"><li>Lit. Inggris: Latihan Soal (Day 50)</li><li>PK/PM: Akar & Eksponen, Logaritma Dasar (Day 51)</li><li>PK/PM: SPLDV & SPLTV, Diagram Alir (Day 52)</li></ul></div></div>
+    <div class="tl-row" data-date="2026-03-24"><div class="tl-date"><div class="dm">24 Mar</div><div class="dd">Selasa</div></div><div class="tl-dot" style="background:#888780"></div><div class="tl-content"><div class="tl-title">Libur Idulfitri</div><div class="tl-daybadge">Day 53–55</div><ul class="tl-items"><li>PK/PM: Himpunan, Fungsi Relasi (Day 53)</li><li>PK/PM: Drilling Latihan Soal PK/PM (Day 54)</li><li>PU: Drilling Penalaran Deduktif & Induktif (Day 55)</li></ul></div></div>
+    <div class="tl-row" data-date="2026-03-25"><div class="tl-date"><div class="dm">25 Mar</div><div class="dd">Rabu</div></div><div class="tl-dot" style="background:#1D9E75"></div><div class="tl-content"><div class="tl-title">Libur Idulfitri</div><div class="tl-meta">SainsIn TO 2 · Pendaftaran UTBK Buka</div><div class="tl-daybadge">Day 56–58</div><ul class="tl-items"><li>Rest Day / Review (Day 56)</li><li>Lit. Indonesia: Latihan Soal (Day 57–58)</li></ul><div class="tl-note">Pendaftaran UTBK-SNBT dibuka s/d 7 Apr — daftar segera</div></div></div>
+    <div class="tl-row" data-date="2026-03-26"><div class="tl-date"><div class="dm">26 Mar</div><div class="dd">Kamis</div></div><div class="tl-dot" style="background:#888780"></div><div class="tl-content"><div class="tl-title">Libur Idulfitri</div><div class="tl-daybadge">Day 59–61</div><ul class="tl-items"><li>PK/PM: Persamaan & Fungsi Kuadrat (Day 59)</li><li>PK/PM: Pertidaksamaan (Day 60)</li><li>PK/PM: Latihan Soal Kuadrat & Pertidaksamaan (Day 61)</li></ul></div></div>
+    <div class="tl-row" data-date="2026-03-27"><div class="tl-date"><div class="dm">27 Mar</div><div class="dd">Jumat</div></div><div class="tl-dot" style="background:#888780"></div><div class="tl-content"><div class="tl-title">Libur Idulfitri</div><div class="tl-daybadge">Day 62–64</div><ul class="tl-items"><li>Lit. Inggris: Word's Meaning, Contextual Meaning, Synonym & Antonym (Day 62)</li><li>Rest Day / Review (Day 63)</li><li>PBM: Frasa/Kelompok Kata, Klausa (Day 64)</li></ul></div></div>
+    <div class="tl-row" data-date="2026-03-28"><div class="tl-date"><div class="dm">28 Mar</div><div class="dd">Sabtu</div></div><div class="tl-dot" style="background:#1D9E75"></div><div class="tl-content"><div class="tl-title">Libur Idulfitri</div><div class="tl-meta">SainsIn TO 3</div><div class="tl-daybadge">Day 65–67</div><ul class="tl-items"><li>PPU: Penggunaan Istilah, Perubahan Makna Kata (Day 65)</li><li>PK/PM: Sudut & Operasi Sudut, Sifat Bangun Datar (Day 66)</li><li>PK/PM: Trigonometri Dasar, Kesebangunan (Day 67)</li></ul></div></div>
+    <div class="tl-row" data-date="2026-03-29"><div class="tl-date"><div class="dm">29 Mar</div><div class="dd">Minggu</div></div><div class="tl-dot" style="background:#378ADD"></div><div class="tl-content"><div class="tl-title">TO Pahamify 14</div><div class="tl-daybadge">Day 68–70</div><ul class="tl-items"><li>PU: Perbandingan, Persentase, Statistik Dasar (Day 68)</li><li>PU: Soal Cerita Diagram & Tabel (Day 69)</li><li>Rest Day / Review (Day 70)</li></ul></div></div>
+    <div class="tl-row" data-date="2026-03-30"><div class="tl-date"><div class="dm">30 Mar</div><div class="dd">Senin</div></div><div class="tl-dot" style="background:#9A9CFF"></div><div class="tl-content"><div class="tl-title">Slot TO</div><div class="tl-daybadge">Day 71–73</div><ul class="tl-items"><li>Lit. Indonesia: Latihan Soal (Day 71)</li><li>PK/PM: Keliling & Luas Bangun Datar (Day 72)</li><li>PK/PM: Full Latihan Soal Geometri Bangun Datar (Day 73)</li></ul></div></div>
+    <div class="tl-row speedrun-end" data-date="2026-03-31"><div class="tl-date"><div class="dm">31 Mar</div><div class="dd">Selasa</div></div><div class="tl-dot" style="background:#BA7517"></div><div class="tl-content"><div class="tl-title">Pengumuman SNBP</div><div class="tl-meta">Akhir Speedrun</div><div class="tl-daybadge">Day 74–76</div><ul class="tl-items"><li>Lit. Inggris: Reference, Inference, Restating Sentence (Day 74)</li><li>Lit. Inggris: Drilling baca artikel, vocab, tenses (Day 75)</li><li>PBM: Kalimat Efektif dan Tidak Efektif (Day 76)</li></ul><div class="tl-note">Cek SNBP hari ini — jika lolos, strategi berubah total</div></div></div>
+    <div class="tl-phase">Fase 2 — Drilling + TO Rutin (1–10 Apr)</div>
+    <div class="tl-row dimmed" data-date="2026-04-01"><div class="tl-date"><div class="dm">1 Apr</div><div class="dd">Rabu</div></div><div class="tl-dot" style="background:#378ADD"></div><div class="tl-content"><div class="tl-title">TO Pahamify 15</div></div></div>
+    <div class="tl-row dimmed" data-date="2026-04-03"><div class="tl-date"><div class="dm">3 Apr</div><div class="dd">Jumat</div></div><div class="tl-dot" style="background:#1D9E75"></div><div class="tl-content"><div class="tl-title">SainsIn TO 4</div></div></div>
+    <div class="tl-row dimmed" data-date="2026-04-06"><div class="tl-date"><div class="dm">6 Apr</div><div class="dd">Senin</div></div><div class="tl-dot" style="background:#378ADD"></div><div class="tl-content"><div class="tl-title">TO Pahamify 16</div></div></div>
+    <div class="tl-row dimmed" data-date="2026-04-07"><div class="tl-date"><div class="dm">7 Apr</div><div class="dd">Selasa</div></div><div class="tl-dot" style="background:#3C3489"></div><div class="tl-content"><div class="tl-title">Pendaftaran UTBK Tutup</div><div class="tl-note">Pastikan sudah daftar sebelum ini</div></div></div>
+    <div class="tl-row dimmed" data-date="2026-04-08"><div class="tl-date"><div class="dm">8 Apr</div><div class="dd">Rabu</div></div><div class="tl-dot" style="background:#1D9E75"></div><div class="tl-content"><div class="tl-title">SainsIn TO 5</div></div></div>
+    <div class="tl-phase">Fase 3 — Simulasi & Stabilisasi (11–20 Apr)</div>
+    <div class="tl-row dimmed" data-date="2026-04-11"><div class="tl-date"><div class="dm">11 Apr</div><div class="dd">Sabtu</div></div><div class="tl-dot" style="background:#378ADD"></div><div class="tl-content"><div class="tl-title">TO Pahamify 17</div></div></div>
+    <div class="tl-row dimmed" data-date="2026-04-13"><div class="tl-date"><div class="dm">13 Apr</div><div class="dd">Senin</div></div><div class="tl-dot" style="background:#9A9CFF"></div><div class="tl-content"><div class="tl-title">Slot TO</div></div></div>
+    <div class="tl-row dimmed" data-date="2026-04-15"><div class="tl-date"><div class="dm">15 Apr</div><div class="dd">Rabu</div></div><div class="tl-dot" style="background:#378ADD"></div><div class="tl-content"><div class="tl-title">TO Pahamify 18</div></div></div>
+    <div class="tl-row dimmed" data-date="2026-04-17"><div class="tl-date"><div class="dm">17 Apr</div><div class="dd">Jumat</div></div><div class="tl-dot" style="background:#1D9E75"></div><div class="tl-content"><div class="tl-title">SainsIn TO 6</div></div></div>
+    <div class="tl-row dimmed" data-date="2026-04-18"><div class="tl-date"><div class="dm">18 Apr</div><div class="dd">Sabtu</div></div><div class="tl-dot" style="background:#378ADD"></div><div class="tl-content"><div class="tl-title">TO Pahamify 19</div></div></div>
+    <div class="tl-row dimmed" data-date="2026-04-20"><div class="tl-date"><div class="dm">20 Apr</div><div class="dd">Senin</div></div><div class="tl-dot" style="background:#E24B4A"></div><div class="tl-content"><div class="tl-title">H-1 UTBK — Istirahat Penuh</div><div class="tl-note">Slot TO di kalender — disarankan tidak digunakan</div></div></div>
+    <div class="tl-row dimmed" data-date="2026-04-21"><div class="tl-date"><div class="dm">21 Apr</div><div class="dd">Selasa</div></div><div class="tl-dot" style="background:#E24B4A"></div><div class="tl-content"><div class="tl-title">Pelaksanaan UTBK</div><div class="tl-note">Matematika ITB (Pil.1) · STEI-K ITB (Pil.2)</div></div></div>
+  </div>
 </div>
 
-<hr class="divider">
+<div class="card">
+  <div class="section-label">Skor TO — Input Langsung</div>
+  <div class="alert a-info" style="margin-bottom:8px;">Edit skor — grafik & statistik update otomatis. Diurutkan per platform.</div>
 
-<div class="section-label">Breakdown 74 Hari Sisa</div>
-<div class="grid4" style="margin-bottom:0.875rem;">
-  <div class="mcard"><div class="mlabel">Materi baru</div><div class="mval">36 hari</div><div class="msub">22–31 Mar</div></div>
-  <div class="mcard"><div class="mlabel">Latihan soal</div><div class="mval">22 hari</div><div class="msub">Fase 2</div></div>
-  <div class="mcard"><div class="mlabel">Rest / TO</div><div class="mval">11 hari</div><div class="msub">Fase 2 & 3</div></div>
-  <div class="mcard"><div class="mlabel">Libur Idul Fitri</div><div class="mval" style="color:#BA7517">5 hari</div><div class="msub">Day 109–113</div></div>
-</div>
-<div class="subtes-row"><div class="subtes-lbl">PK/PM</div><div class="subtes-outer"><div class="subtes-inner" style="width:100%;background:#185FA5"><span class="subtes-val" style="color:#E6F1FB">16 hari — geometri, peluang, statistik</span></div></div></div>
-<div class="subtes-row"><div class="subtes-lbl">PPU</div><div class="subtes-outer"><div class="subtes-inner" style="width:55%;background:#993C1D"><span class="subtes-val" style="color:#FAECE7">8 hari — kalimat, paragraf</span></div></div></div>
-<div class="subtes-row"><div class="subtes-lbl">PBM</div><div class="subtes-outer"><div class="subtes-inner" style="width:42%;background:#085041"><span class="subtes-val" style="color:#E1F5EE">6 hari — frasa, klausa</span></div></div></div>
-<div class="subtes-row"><div class="subtes-lbl">PU</div><div class="subtes-outer"><div class="subtes-inner" style="width:35%;background:#3C3489"><span class="subtes-val" style="color:#EEEDFE">5 hari — statistik, barisan</span></div></div></div>
-<div class="subtes-row"><div class="subtes-lbl">Lit. Inggris</div><div class="subtes-outer"><div class="subtes-inner" style="width:28%;background:#993556"><span class="subtes-val" style="color:#FBEAF0">4 hari — texts, inference</span></div></div></div>
+  <div class="plat-lbl">Analitica (1–20)</div>
+  <div class="skor-grid">
+    <div class="skor-card"><div class="slbl">Analitica #1</div><input id="s_a1" type="number" value="601.91" step="0.01"></div>
+    <div class="skor-card"><div class="slbl">Analitica #2</div><input id="s_a2" type="number" value="582.26" step="0.01"></div>
+    <div class="skor-card"><div class="slbl">Analitica #3</div><input id="s_a3" type="number" placeholder="—" step="0.01"></div>
+    <div class="skor-card"><div class="slbl">Analitica #4</div><input id="s_a4" type="number" placeholder="—" step="0.01"></div>
+    <div class="skor-card"><div class="slbl">Analitica #5</div><input id="s_a5" type="number" placeholder="—" step="0.01"></div>
+    <div class="skor-card"><div class="slbl">Analitica #6</div><input id="s_a6" type="number" placeholder="—" step="0.01"></div>
+    <div class="skor-card"><div class="slbl">Analitica #7</div><input id="s_a7" type="number" placeholder="—" step="0.01"></div>
+    <div class="skor-card"><div class="slbl">Analitica #8</div><input id="s_a8" type="number" placeholder="—" step="0.01"></div>
+    <div class="skor-card"><div class="slbl">Analitica #9</div><input id="s_a9" type="number" placeholder="—" step="0.01"></div>
+    <div class="skor-card"><div class="slbl">Analitica #10</div><input id="s_a10" type="number" placeholder="—" step="0.01"></div>
+    <div class="skor-card"><div class="slbl">Analitica #11</div><input id="s_a11" type="number" placeholder="—" step="0.01"></div>
+    <div class="skor-card"><div class="slbl">Analitica #12</div><input id="s_a12" type="number" placeholder="—" step="0.01"></div>
+    <div class="skor-card"><div class="slbl">Analitica #13</div><input id="s_a13" type="number" placeholder="—" step="0.01"></div>
+    <div class="skor-card"><div class="slbl">Analitica #14</div><input id="s_a14" type="number" placeholder="—" step="0.01"></div>
+    <div class="skor-card"><div class="slbl">Analitica #15</div><input id="s_a15" type="number" placeholder="—" step="0.01"></div>
+    <div class="skor-card"><div class="slbl">Analitica #16</div><input id="s_a16" type="number" placeholder="—" step="0.01"></div>
+    <div class="skor-card"><div class="slbl">Analitica #17</div><input id="s_a17" type="number" placeholder="—" step="0.01"></div>
+    <div class="skor-card"><div class="slbl">Analitica #18</div><input id="s_a18" type="number" placeholder="—" step="0.01"></div>
+    <div class="skor-card"><div class="slbl">Analitica #19</div><input id="s_a19" type="number" placeholder="—" step="0.01"></div>
+    <div class="skor-card"><div class="slbl">Analitica #20</div><input id="s_a20" type="number" placeholder="—" step="0.01"></div>
+  </div>
 
-<hr class="divider">
+  <div class="plat-lbl">Pahamify (9–11, 14–19)</div>
+  <div class="skor-grid">
+    <div class="skor-card"><div class="slbl">Pahamify #9</div><input id="s_p9" type="number" value="535" step="0.01"></div>
+    <div class="skor-card"><div class="slbl">Pahamify #10</div><input id="s_p10" type="number" value="557" step="0.01"></div>
+    <div class="skor-card"><div class="slbl">Pahamify #11</div><input id="s_p11" type="number" value="586" step="0.01"></div>
+    <div class="skor-card"><div class="slbl">Pahamify #14</div><input id="s_p14" type="number" placeholder="—" step="0.01"></div>
+    <div class="skor-card"><div class="slbl">Pahamify #15</div><input id="s_p15" type="number" placeholder="—" step="0.01"></div>
+    <div class="skor-card"><div class="slbl">Pahamify #16</div><input id="s_p16" type="number" placeholder="—" step="0.01"></div>
+    <div class="skor-card"><div class="slbl">Pahamify #17</div><input id="s_p17" type="number" placeholder="—" step="0.01"></div>
+    <div class="skor-card"><div class="slbl">Pahamify #18</div><input id="s_p18" type="number" placeholder="—" step="0.01"></div>
+    <div class="skor-card"><div class="slbl">Pahamify #19</div><input id="s_p19" type="number" placeholder="—" step="0.01"></div>
+  </div>
 
-<div class="section-label">Rencana 30 Hari</div>
-<div class="phase-box" style="border-color:#378ADD;">
-  <div class="phase-head"><div class="phase-name">Fase 1 — Speedrun Semua Materi</div><div class="phase-date">22–31 Mar · 10 hari</div></div>
-  <div class="bar-track"><div class="bar-fill" id="pb1" style="background:#378ADD;width:0%"></div></div>
-  <div class="phase-desc">Day 47–76, ~3 topik/hari. SainsIn TO 1–3 di 23, 25, 28 Mar. Pahamify 14 di 29 Mar. <strong>Daftar UTBK 25 Mar.</strong></div>
+  <div class="plat-lbl">SainsIn (TO 1–6)</div>
+  <div class="skor-grid">
+    <div class="skor-card"><div class="slbl">SainsIn TO 1</div><input id="s_s1" type="number" placeholder="—" step="0.01"></div>
+    <div class="skor-card"><div class="slbl">SainsIn TO 2</div><input id="s_s2" type="number" placeholder="—" step="0.01"></div>
+    <div class="skor-card"><div class="slbl">SainsIn TO 3</div><input id="s_s3" type="number" placeholder="—" step="0.01"></div>
+    <div class="skor-card"><div class="slbl">SainsIn TO 4</div><input id="s_s4" type="number" placeholder="—" step="0.01"></div>
+    <div class="skor-card"><div class="slbl">SainsIn TO 5</div><input id="s_s5" type="number" placeholder="—" step="0.01"></div>
+    <div class="skor-card"><div class="slbl">SainsIn TO 6</div><input id="s_s6" type="number" placeholder="—" step="0.01"></div>
+  </div>
+
+  <div class="grid4" style="margin:10px 0;">
+    <div class="mcard"><div class="lbl">Rata-rata</div><div class="val" id="statAvg" style="font-size:17px">—</div><div class="sub" id="statCount">—</div></div>
+    <div class="mcard"><div class="lbl">Tertinggi</div><div class="val" id="statMax" style="font-size:17px">—</div><div class="sub" id="statMaxLabel">—</div></div>
+    <div class="mcard"><div class="lbl">Tren Pahamify</div><div class="val" id="statTrend" style="font-size:13px">—</div><div class="sub" id="statTrendLabel">—</div></div>
+    <div class="mcard"><div class="lbl">Gap ke Mtk ITB</div><div class="val" id="statGap" style="font-size:17px">—</div><div class="sub">dari rata-rata</div></div>
+  </div>
+
+  <div style="position:relative;width:100%;height:220px"><canvas id="scoreChart"></canvas></div>
+  <div class="legend-row">
+    <div class="legend-item"><span class="legend-dot" style="background:#1D9E75"></span>Analitica</div>
+    <div class="legend-item"><span class="legend-dot" style="background:#378ADD"></span>Pahamify</div>
+    <div class="legend-item"><span class="legend-dot" style="background:#E24B4A"></span>SainsIn</div>
+    <div class="legend-item"><span class="legend-dot" style="background:rgba(186,117,23,0.4);border:1px dashed #BA7517"></span>Target Mtk ITB (~665)</div>
+    <div class="legend-item"><span class="legend-dot" style="background:rgba(226,75,74,0.3);border:1px dashed #E24B4A"></span>Target STEI-K (~760)</div>
+  </div>
 </div>
-<div class="phase-box">
-  <div class="phase-head"><div class="phase-name">Fase 2 — Drilling + TO Rutin</div><div class="phase-date">1–10 Apr · 10 hari</div></div>
-  <div class="bar-track"><div class="bar-fill" id="pb2" style="background:#1D9E75;width:0%"></div></div>
-  <div class="phase-desc">Pahamify 15 (1 Apr) + SainsIn 4 (3 Apr) + Pahamify 16 (6 Apr) + SainsIn 5 (8 Apr). Deadline daftar 7 Apr.</div>
+
+<div class="card">
+  <div class="section-label">Jurusan Tujuan & Persaingan</div>
+  <div class="j-grid">
+    <div class="j-card j1">
+      <span class="j-badge j1-badge">Pilihan 1</span>
+      <div class="j-name">Matematika ITB</div>
+      <div class="j-fak">FMIPA — Fakultas Matematika & IPA</div>
+      <div class="j-stat"><span class="jl">Daya tampung</span><span class="jv">~45 kursi</span></div>
+      <div class="j-stat"><span class="jl">Peminat 2024</span><span class="jv warn">~540 orang</span></div>
+      <div class="j-stat"><span class="jl">Keketatan</span><span class="jv warn">1:12 (~8%)</span></div>
+      <div class="j-stat"><span class="jl">Est. skor aman</span><span class="jv warn">650–680</span></div>
+      <div class="kbar"><div class="kbar-fill" style="width:30%;background:#BA7517"></div></div>
+      <div class="gap-sec">
+        <div class="gap-lbl">Rata-rata vs target (665)</div>
+        <div class="gap-outer"><div class="gap-fill" id="gapBar1" style="background:#378ADD"><span style="color:#E6F1FB;font-size:9px;font-weight:500;" id="gapTxt1">572 avg</span></div><div class="gap-line" style="left:73%"></div></div>
+        <div style="font-size:9px;color:#888780;margin-top:2px;" id="gapNote1">Gap ~93 poin</div>
+      </div>
+      <div class="src-note">admission.itb.ac.id · snpmb.bppp.kemdikbud.go.id</div>
+    </div>
+    <div class="j-card j2">
+      <span class="j-badge j2-badge">Pilihan 2</span>
+      <div class="j-name">STEI — Komputasi</div>
+      <div class="j-fak">STEI — Sekolah Teknik Elektro & Informatika</div>
+      <div class="j-stat"><span class="jl">Daya tampung</span><span class="jv danger">~90 kursi</span></div>
+      <div class="j-stat"><span class="jl">Peminat 2024</span><span class="jv danger">3.848 orang</span></div>
+      <div class="j-stat"><span class="jl">Keketatan</span><span class="jv danger">1:43 (2,3%)</span></div>
+      <div class="j-stat"><span class="jl">Est. skor aman</span><span class="jv danger">750–780+</span></div>
+      <div class="kbar"><div class="kbar-fill" style="width:92%;background:#E24B4A"></div></div>
+      <div class="gap-sec">
+        <div class="gap-lbl">Rata-rata vs target (760)</div>
+        <div class="gap-outer"><div class="gap-fill" id="gapBar2" style="background:#378ADD"><span style="color:#E6F1FB;font-size:9px;font-weight:500;" id="gapTxt2">572 avg</span></div><div class="gap-line" style="left:74%"></div></div>
+        <div style="font-size:9px;color:#888780;margin-top:2px;" id="gapNote2">Gap ~188 poin</div>
+      </div>
+      <div class="src-note">aimasukptn.com · snpmb.bppp.kemdikbud.go.id</div>
+    </div>
+  </div>
+  <div class="alert a-danger">STEI-K (Pil. 2) — terketat di ITB: 3.848 peminat, ~90 kursi (2,3%). Gap 188 poin dari rata-rata skormu saat ini.</div>
+  <div class="alert a-warn">Matematika ITB (Pil. 1) — keketatan 1:12. Dengan tren +51 poin per 3 TO, gap 93 poin bisa dikurangi dalam 30 hari.</div>
 </div>
-<div class="phase-box">
-  <div class="phase-head"><div class="phase-name">Fase 3 — Simulasi & Stabilisasi</div><div class="phase-date">11–20 Apr · 10 hari</div></div>
-  <div class="bar-track"><div class="bar-fill" id="pb3" style="background:#BA7517;width:0%"></div></div>
-  <div class="phase-desc">Pahamify 17 (11 Apr) + Pahamify 18 (15 Apr) + SainsIn 6 (17 Apr) + Pahamify 19 (18 Apr). H-1 istirahat total.</div>
+
+<div class="card">
+  <div class="section-label">Proyeksi Skor vs Target</div>
+  <div class="proj-row"><div class="proj-lbl">Konservatif</div><div class="proj-outer"><div class="proj-inner" style="width:54%;background:#888780"><span class="proj-val" style="color:#F1EFE8">585–600</span></div><div class="proj-t1" style="left:72%"></div><div class="proj-t2" style="left:88%"></div></div></div>
+  <div class="proj-row"><div class="proj-lbl">Realistis (3 fase)</div><div class="proj-outer"><div class="proj-inner" style="width:65%;background:#1D9E75"><span class="proj-val" style="color:#E1F5EE">600–620</span></div><div class="proj-t1" style="left:72%"></div><div class="proj-t2" style="left:88%"></div></div></div>
+  <div class="proj-row"><div class="proj-lbl">Optimal (full aktif)</div><div class="proj-outer"><div class="proj-inner" style="width:75%;background:#378ADD"><span class="proj-val" style="color:#E6F1FB">620–645</span></div><div class="proj-t1" style="left:72%"></div><div class="proj-t2" style="left:88%"></div></div></div>
+  <div style="display:flex;gap:12px;margin-top:6px;font-size:10px;color:#888780">
+    <span style="display:flex;align-items:center;gap:3px"><span style="width:9px;height:2px;background:#E24B4A;display:inline-block;border-radius:1px"></span>Mtk ITB ~665</span>
+    <span style="display:flex;align-items:center;gap:3px"><span style="width:9px;height:2px;background:#BA7517;display:inline-block;border-radius:1px"></span>STEI-K ~760</span>
+  </div>
 </div>
+
+<div class="card">
+  <div class="section-label">Breakdown 74 Hari Sisa</div>
+  <div class="grid4" style="margin-bottom:12px;">
+    <div class="mcard"><div class="lbl">Materi baru</div><div class="val">36 hari</div><div class="sub">22–31 Mar</div></div>
+    <div class="mcard"><div class="lbl">Latihan soal</div><div class="val">22 hari</div><div class="sub">Fase 2</div></div>
+    <div class="mcard"><div class="lbl">Rest / TO</div><div class="val">11 hari</div><div class="sub">Fase 2 & 3</div></div>
+    <div class="mcard"><div class="lbl">Libur Idul Fitri</div><div class="val" style="color:#BA7517">5 hari</div><div class="sub">Day 109–113</div></div>
+  </div>
+  <div class="sub-row"><div class="sub-lbl">PK/PM</div><div class="sub-outer"><div class="sub-inner" style="width:100%;background:#185FA5"><span class="sub-val" style="color:#E6F1FB">16 hari — geometri, peluang, statistik</span></div></div></div>
+  <div class="sub-row"><div class="sub-lbl">PPU</div><div class="sub-outer"><div class="sub-inner" style="width:55%;background:#993C1D"><span class="sub-val" style="color:#FAECE7">8 hari — kalimat, paragraf</span></div></div></div>
+  <div class="sub-row"><div class="sub-lbl">PBM</div><div class="sub-outer"><div class="sub-inner" style="width:42%;background:#085041"><span class="sub-val" style="color:#E1F5EE">6 hari — frasa, klausa</span></div></div></div>
+  <div class="sub-row"><div class="sub-lbl">PU</div><div class="sub-outer"><div class="sub-inner" style="width:35%;background:#3C3489"><span class="sub-val" style="color:#EEEDFE">5 hari — statistik, barisan</span></div></div></div>
+  <div class="sub-row"><div class="sub-lbl">Lit. Inggris</div><div class="sub-outer"><div class="sub-inner" style="width:28%;background:#993556"><span class="sub-val" style="color:#FBEAF0">4 hari — texts, inference</span></div></div></div>
+</div>
+
+<div class="card">
+  <div class="section-label">Rencana 30 Hari</div>
+  <div class="ph-box accent">
+    <div class="ph-head"><div class="ph-name">Fase 1 — Speedrun Semua Materi</div><div class="ph-date">22–31 Mar · 10 hari · 6–8 jam/hari</div></div>
+    <div class="bar-track"><div class="bar-fill" id="pb1" style="background:#378ADD;width:0%"></div></div>
+    <div class="ph-desc">Day 47–76, ~3 topik/hari. SainsIn TO 1–3 di 23, 25, 28 Mar. Pahamify 14 di 29 Mar. <strong>Daftar UTBK 25 Mar.</strong></div>
+  </div>
+  <div class="ph-box">
+    <div class="ph-head"><div class="ph-name">Fase 2 — Drilling + TO Rutin</div><div class="ph-date">1–10 Apr · 10 hari · 5–7 jam/hari</div></div>
+    <div class="bar-track"><div class="bar-fill" id="pb2" style="background:#1D9E75;width:0%"></div></div>
+    <div class="ph-desc">Pahamify 15 (1 Apr) + SainsIn 4 (3 Apr) + Pahamify 16 (6 Apr) + SainsIn 5 (8 Apr). Deadline daftar 7 Apr.</div>
+  </div>
+  <div class="ph-box">
+    <div class="ph-head"><div class="ph-name">Fase 3 — Simulasi & Stabilisasi</div><div class="ph-date">11–20 Apr · 10 hari · 4–6 jam/hari</div></div>
+    <div class="bar-track"><div class="bar-fill" id="pb3" style="background:#BA7517;width:0%"></div></div>
+    <div class="ph-desc">Pahamify 17 (11 Apr) + Pahamify 18 (15 Apr) + SainsIn 6 (17 Apr) + Pahamify 19 (18 Apr). H-1 istirahat total.</div>
+  </div>
+</div>
+
+<div class="footer">Dashboard UTBK 2026 v13 · Azzam · Tanggal otomatis (WIB) · GCal: Study & School · Sumber: admission.itb.ac.id, snpmb.bppp.kemdikbud.go.id</div>
 
 </div>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
 <script>
-// ── WIB ──────────────────────────────────────────────────────
+// WIB fixed
 function todayWIB(){const d=new Date(Date.now()+7*3600*1000);return new Date(d.getUTCFullYear(),d.getUTCMonth(),d.getUTCDate());}
 function nowWIB(){const d=new Date(Date.now()+7*3600*1000);return{h:d.getUTCHours(),m:d.getUTCMinutes()};}
 function toYMD(d){return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
@@ -366,102 +375,83 @@ function clamp(v,lo,hi){return Math.max(lo,Math.min(hi,v));}
 function daysDiff(a,b){return Math.round((b-a)/86400000);}
 const DI=['Minggu','Senin','Selasa','Rabu','Kamis','Jumat','Sabtu'];
 const MI=['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
-const today=todayWIB(), wib=nowWIB();
-const START=new Date(2026,2,22), UTBK=new Date(2026,3,21);
-const F1E=new Date(2026,2,31), F2S=new Date(2026,3,1), F2E=new Date(2026,3,10), F3S=new Date(2026,3,11), F3E=new Date(2026,3,20);
-
-document.getElementById('todayLabel').textContent=`Snapshot — ${DI[today.getDay()]}, ${today.getDate()} ${MI[today.getMonth()]} ${today.getFullYear()} (WIB)`;
+const today=todayWIB(),wib=nowWIB();
+const START=new Date(2026,2,22),UTBK=new Date(2026,3,21);
+const F1E=new Date(2026,2,31),F2S=new Date(2026,3,1),F2E=new Date(2026,3,10),F3S=new Date(2026,3,11),F3E=new Date(2026,3,20);
+document.getElementById('todayLabel').textContent=`${DI[today.getDay()]}, ${today.getDate()} ${MI[today.getMonth()]} ${today.getFullYear()} · v13`;
 document.getElementById('wibLabel').textContent=`Pukul ${String(wib.h).padStart(2,'0')}:${String(wib.m).padStart(2,'0')} WIB · UTBK 21 April 2026`;
 document.getElementById('daysLeft').textContent=Math.max(0,daysDiff(today,UTBK));
 const fp=clamp(daysDiff(START,today)/daysDiff(START,UTBK),0,1);
 document.getElementById('cntFill').style.width=(fp*100).toFixed(1)+'%';
 document.getElementById('cntPct').textContent=Math.round(fp*100)+'% terlewati';
-
 function pp(cur,s,e){if(cur<s)return 0;if(cur>=e)return 100;return Math.round(daysDiff(s,cur)/daysDiff(s,e)*100);}
-const phases=[
-  {l:'Fase 1 — Speedrun',s:START,e:F1E,c:'#378ADD',tc:'#E6F1FB'},
-  {l:'Fase 2 — Drilling', s:F2S,  e:F2E, c:'#1D9E75',tc:'#E1F5EE'},
-  {l:'Fase 3 — Simulasi', s:F3S,  e:F3E, c:'#BA7517',tc:'#FAEEDA'},
-];
-const area=document.getElementById('phaseProgressArea');
+const phases=[{l:'Fase 1 — Speedrun',s:START,e:F1E,c:'#378ADD',tc:'#E6F1FB'},{l:'Fase 2 — Drilling',s:F2S,e:F2E,c:'#1D9E75',tc:'#E1F5EE'},{l:'Fase 3 — Simulasi',s:F3S,e:F3E,c:'#BA7517',tc:'#FAEEDA'}];
+const area=document.getElementById('phaseArea');
 phases.forEach((ph,i)=>{
   const p=pp(today,ph.s,ph.e);
   document.getElementById('pb'+(i+1)).style.width=p+'%';
   const st=p===0?'Belum mulai':p===100?'Selesai':`Hari ke-${daysDiff(ph.s,today)+1} dari ${daysDiff(ph.s,ph.e)+1}`;
-  const row=document.createElement('div'); row.className='phase-progress-row';
-  row.innerHTML=`<div class="phase-progress-lbl">${ph.l}</div><div class="phase-progress-outer"><div class="phase-progress-fill" style="width:${p}%;background:${ph.c}">${p>20?`<span class="phase-progress-val" style="color:${ph.tc}">${st}</span>`:''}</div>${p<=20?`<span style="position:absolute;left:${p+1}%;top:0;bottom:0;display:flex;align-items:center;font-size:9px;color:var(--color-text-tertiary)">${st}</span>`:''}</div><div class="phase-progress-pct">${p}%</div>`;
+  const row=document.createElement('div');row.className='ph-row';
+  row.innerHTML=`<div class="ph-lbl">${ph.l}</div><div class="ph-outer"><div class="ph-fill" style="width:${p}%;background:${ph.c}">${p>20?`<span style="color:${ph.tc}">${st}</span>`:''}</div>${p<=20?`<span style="position:absolute;left:${p+1}%;top:0;bottom:0;display:flex;align-items:center;font-size:9px;color:#888780">${st}</span>`:''}</div><div class="ph-pct">${p}%</div>`;
   area.appendChild(row);
 });
-
 const todayStr=toYMD(today);
 document.querySelectorAll('.tl-row[data-date]').forEach(r=>{
   const d=r.dataset.date;
-  if(d<todayStr) r.classList.add('past');
+  if(d<todayStr)r.classList.add('past');
   else if(d===todayStr){r.classList.add('today-row');r.classList.remove('dimmed','past');const t=r.querySelector('.tl-title');if(t)t.innerHTML+=`<span class="today-badge">Hari ini</span>`;}
 });
-
-// ── CHART v15: Analitica=merah, Pahamify=biru, SainsIn=hijau ──
+// Chart
 const IDS_A=['s_a1','s_a2','s_a3','s_a4','s_a5','s_a6','s_a7','s_a8','s_a9','s_a10','s_a11','s_a12','s_a13','s_a14','s_a15','s_a16','s_a17','s_a18','s_a19','s_a20'];
 const IDS_P=['s_p9','s_p10','s_p11','s_p14','s_p15','s_p16','s_p17','s_p18','s_p19'];
 const IDS_S=['s_s1','s_s2','s_s3','s_s4','s_s5','s_s6'];
 const ALL=[...IDS_A,...IDS_P,...IDS_S];
-const NA=IDS_A.length, NP=IDS_P.length, NS=IDS_S.length, N=NA+NP+NS;
+const NA=IDS_A.length,NP=IDS_P.length,NS=IDS_S.length,N=NA+NP+NS;
 const CLBLS=[...IDS_A.map((_,i)=>'A#'+(i+1)),'P#9','P#10','P#11','P#14','P#15','P#16','P#17','P#18','P#19','S#1','S#2','S#3','S#4','S#5','S#6'];
-
 const chart=new Chart(document.getElementById('scoreChart').getContext('2d'),{
-  type:'line',
-  data:{labels:CLBLS,datasets:[
-    // Analitica: MERAH
-    {label:'Analitica',data:Array(N).fill(null),borderColor:'#E24B4A',backgroundColor:'#E24B4A18',pointBackgroundColor:'#E24B4A',pointRadius:3,tension:0.3,spanGaps:false},
-    // Pahamify: BIRU
-    {label:'Pahamify', data:Array(N).fill(null),borderColor:'#378ADD',backgroundColor:'#378ADD18',pointBackgroundColor:'#378ADD',pointRadius:3,tension:0.3,spanGaps:false},
-    // SainsIn: HIJAU
-    {label:'SainsIn',  data:Array(N).fill(null),borderColor:'#1D9E75',backgroundColor:'#1D9E7518',pointBackgroundColor:'#1D9E75',pointRadius:3,tension:0.3,spanGaps:false},
-    // Target FMIPA-M
-    {label:'FMIPA-M',  data:Array(N).fill(645),borderColor:'rgba(186,117,23,0.5)',borderDash:[5,4],pointRadius:0,borderWidth:1.5,fill:false},
-    // Target STEI-K
-    {label:'STEI-K',   data:Array(N).fill(760),borderColor:'rgba(107,110,240,0.5)',borderDash:[3,3],pointRadius:0,borderWidth:1.5,fill:false},
+  type:'line',data:{labels:CLBLS,datasets:[
+    {label:'Analitica',data:Array(N).fill(null),borderColor:'#1D9E75',backgroundColor:'#1D9E7518',pointBackgroundColor:'#1D9E75',pointRadius:3,tension:0.3,spanGaps:false},
+    {label:'Pahamify',data:Array(N).fill(null),borderColor:'#378ADD',backgroundColor:'#378ADD18',pointBackgroundColor:'#378ADD',pointRadius:3,tension:0.3,spanGaps:false},
+    {label:'SainsIn',data:Array(N).fill(null),borderColor:'#E24B4A',backgroundColor:'#E24B4A18',pointBackgroundColor:'#E24B4A',pointRadius:3,tension:0.3,spanGaps:false},
+    {label:'Mtk ITB',data:Array(N).fill(665),borderColor:'rgba(186,117,23,0.5)',borderDash:[5,4],pointRadius:0,borderWidth:1.5,fill:false},
+    {label:'STEI-K',data:Array(N).fill(760),borderColor:'rgba(226,75,74,0.4)',borderDash:[3,3],pointRadius:0,borderWidth:1.5,fill:false},
   ]},
-  options:{responsive:true,maintainAspectRatio:true,aspectRatio:1.8,
-    plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>c.raw!==null?c.dataset.label+': '+c.raw:null,filter:i=>i.raw!==null}}},
-    scales:{y:{min:480,max:800,ticks:{font:{size:10},color:'#888'},grid:{color:'#88888814'}},x:{ticks:{font:{size:8},color:'#888',maxRotation:45},grid:{display:false}}}}
+  options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>c.raw!==null?c.dataset.label+': '+c.raw:null,filter:i=>i.raw!==null}}},
+    scales:{y:{min:480,max:800,ticks:{font:{size:10},color:'#888'},grid:{color:'rgba(136,136,136,0.1)'}},x:{ticks:{font:{size:8},color:'#888',maxRotation:45},grid:{display:false}}}}
 });
-
 function gv(id){const v=parseFloat(document.getElementById(id).value);return isNaN(v)?null:v;}
-
 function updateAll(){
-  const vA=IDS_A.map(gv), vP=IDS_P.map(gv), vS=IDS_S.map(gv);
+  const vA=IDS_A.map(gv),vP=IDS_P.map(gv),vS=IDS_S.map(gv);
   chart.data.datasets[0].data=[...vA,...Array(NP+NS).fill(null)];
   chart.data.datasets[1].data=[...Array(NA).fill(null),...vP,...Array(NS).fill(null)];
   chart.data.datasets[2].data=[...Array(NA+NP).fill(null),...vS];
   chart.update('active');
-
   const all=[...vA,...vP,...vS].filter(v=>v!==null);
-  if(!all.length) return;
-  const avg=all.reduce((a,b)=>a+b,0)/all.length, max=Math.max(...all);
-  const allF=[...vA,...vP,...vS];
-  const allL=[...IDS_A.map((_,i)=>'Analitica #'+(i+1)),...['#9','#10','#11','#14','#15','#16','#17','#18','#19'].map(x=>'Pahamify '+x),...IDS_S.map((_,i)=>'SainsIn TO '+(i+1))];
+  if(!all.length)return;
+  const avg=all.reduce((a,b)=>a+b,0)/all.length,max=Math.max(...all);
+  const af=[...vA,...vP,...vS];
+  const al=[...IDS_A.map((_,i)=>'Analitica #'+(i+1)),...['#9','#10','#11','#14','#15','#16','#17','#18','#19'].map(x=>'Pahamify '+x),...IDS_S.map((_,i)=>'SainsIn TO '+(i+1))];
   const phV=vP.filter(v=>v!==null);
-  let tr='—', tl='—';
+  let tr='—',tl='—';
   if(phV.length>=2){const d=phV[phV.length-1]-phV[phV.length-2];tr=(d>=0?'+':'')+d.toFixed(0)+' poin';const pn=['#9','#10','#11','#14','#15','#16','#17','#18','#19'].filter((_,i)=>vP[i]!==null);tl='P'+pn[pn.length-2]+' → P'+pn[pn.length-1];}
-
   document.getElementById('statAvg').textContent=avg.toFixed(1);
   document.getElementById('statCount').textContent=all.length+' sesi TO';
   document.getElementById('statMax').textContent=max.toFixed(1);
-  document.getElementById('statMaxLabel').textContent=allL[allF.indexOf(max)]||'—';
+  document.getElementById('statMaxLabel').textContent=al[af.indexOf(max)]||'—';
   document.getElementById('statTrend').textContent=tr;
   document.getElementById('statTrendLabel').textContent=tl;
-  const g1=645-avg, g2=760-avg;
+  const g1=665-avg,g2=760-avg;
   document.getElementById('statGap').textContent='~'+Math.round(Math.abs(g1))+' poin';
   document.getElementById('statGap').style.color=g1>0?'#BA7517':'#1D9E75';
   const p=clamp(avg/900,0,0.99);
   ['gapBar1','gapBar2'].forEach(id=>document.getElementById(id).style.width=(p*100).toFixed(1)+'%');
   document.getElementById('gapTxt1').textContent=avg.toFixed(0)+' avg';
   document.getElementById('gapTxt2').textContent=avg.toFixed(0)+' avg';
-  document.getElementById('gapNote1').textContent='Gap ~'+Math.round(Math.abs(g1))+' poin dari est. skor aman';
-  document.getElementById('gapNote2').textContent='Gap ~'+Math.round(Math.abs(g2))+' poin dari est. skor aman';
+  document.getElementById('gapNote1').textContent='Gap ~'+Math.round(Math.abs(g1))+' poin';
+  document.getElementById('gapNote2').textContent='Gap ~'+Math.round(Math.abs(g2))+' poin';
 }
-
 ALL.forEach(id=>document.getElementById(id).addEventListener('input',updateAll));
 updateAll();
 </script>
+</body>
+</html>
